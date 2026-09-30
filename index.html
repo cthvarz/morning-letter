@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morning Letter For My Baby! 💌</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: grid;
+            place-items: center; 
+            
+            /* Background awan GIF kamu */
+            background-image: url('awan.gif'); 
+            background-size: cover; 
+            background-position: center;
+            background-repeat: no-repeat;
+            
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden;
+            text-align: center;
+            perspective: 1500px; 
+        }
+
+        /* =========================================
+           1. DESAIN AMPLOP CINTA (SAMPUL DEPAN)
+           ========================================= */
+        .envelope-wrapper {
+            position: absolute;
+            width: 320px;
+            height: 200px;
+            z-index: 50;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 1s ease, opacity 1s ease;
+        }
+
+        .env-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #ffcad4; 
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .env-front {
+            position: absolute;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            border-left: 160px solid #ffb6c1;
+            border-right: 160px solid #ffb6c1;
+            border-bottom: 110px solid #ff9a9e;
+            border-top: 90px solid transparent;
+            border-radius: 0 0 10px 10px;
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .env-flap {
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 160px solid transparent;
+            border-right: 160px solid transparent;
+            border-top: 115px solid #ff8fa3;
+            transform-origin: top; 
+            z-index: 4;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .heart-seal {
+            position: absolute;
+            top: 100px;
+            font-size: 3.5rem;
+            z-index: 5;
+            cursor: pointer;
+            animation: pulseGlow 1.5s infinite;
+            transition: opacity 0.3s;
+            filter: drop-shadow(0 5px 15px rgba(255, 77, 109, 0.6));
+        }
+
+        .hint-envelope {
+            position: absolute;
+            bottom: -50px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: 700;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+            animation: floatText 2s infinite;
+        }
+
+        .envelope-wrapper.open .env-flap {
+            transform: rotateX(180deg); 
+        }
+        .envelope-wrapper.open .heart-seal {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .envelope-wrapper.fade-out {
+            transform: translateY(150px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* =========================================
+           2. DESAIN KERTAS SURAT (PESAN DI DALAMNYA)
+           ========================================= */
+        .card {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            padding: 55px 30px 40px; 
+            border-radius: 15px; 
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            max-width: 85%;
+            width: 350px;
+            grid-area: 1 / 1; 
+            position: relative;
+            transition: transform 1s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.8s ease;
+        }
+
+        .page-hidden-inside {
+            opacity: 0;
+            transform: translateY(50px) scale(0.6);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .page-active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+            z-index: 20;
+        }
+
+        .page-opened {
+            opacity: 0;
+            transform: translateY(120px) scale(0.9); 
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .page-standby {
+            opacity: 0;
+            transform: translateY(60px) scale(0.85); 
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* --- ORNAMEN GARIS LOVE PINK DI ATAS SURAT --- */
+        .love-border {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 18px;
+            border-radius: 15px 15px 0 0;
+            background-color: #fff0f3; /* Warna dasar soft pink lembut */
+            background-image: radial-gradient(#ff758c 35%, transparent 35%);
+            background-size: 18px 18px; /* Mengatur jarak antar love */
+            background-repeat: repeat-x;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-size: 10px;
+            letter-spacing: 12px;
+            color: #ff4d6d;
+            padding-left: 10px;
+        }
+
+        .stamp {
+            position: absolute;
+            top: 25px; right: 25px;
+            font-size: 2.2em;
+            transform: rotate(15deg);
+            filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.1));
+            z-index: 5;
+        }
+
+        /* --- TEKS & TOMBOL --- */
+        h1 {
+            color: #2c3e50; 
+            margin-top: 0;
+            font-size: 2.2em;
+            font-family: 'Baloo 2', cursive; 
+            animation: floatText 3s ease-in-out infinite;
+        }
+
+        @keyframes floatText {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        p {
+            color: #555;
+            font-size: 1.15em;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        button {
+            background-color: #3498db; 
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 700;
+            width: 100%;
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(52, 152, 219, 0.8);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .love-emote {
+            position: absolute;
+            font-size: 2.8rem;
+            pointer-events: none;
+            animation: floatUp 1.5s ease-out forwards;
+            z-index: 100;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.5) rotate(0deg); opacity: 1; }
+            50% { transform: translateY(-100px) scale(1.2) rotate(15deg); opacity: 0.8; }
+            100% { transform: translateY(-200px) scale(1.5) rotate(-15deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BUNGKUSAN AMPLOP AWAL -->
+    <div id="envelopeWrapper" class="envelope-wrapper">
+        <div class="env-back"></div>
+        <div class="env-flap"></div>
+        <div class="env-front"></div>
+        <div id="heartSeal" class="heart-seal">❤️</div>
+        <div class="hint-envelope">Ada surat nih, pencet love-nya sayang! 💌</div>
+    </div>
+
+    <!-- HALAMAN 1 (Kertas yang keluar dari amplop) -->
+    <div id="page1" class="card page-hidden-inside">
+        <div class="love-border">❤️❤️️❤️❤️❤️❤️❤️❤️❤️❤️</div>
+        <div class="stamp">📮</div>
+        <h1>Selamat Pagi, Ganteng! ☀️</h1>
+        <p>Semoga hari ini hal yang baik akan selalu datang ke kamu ya. Jangan lupa sarapan biar lancar aktivitas kamu hari ini sayangku! Be Happy Today💗</p>
+        <button id="btnNext">Pencet disini sayang 💌</button>
+    </div>
+
+    <!-- HALAMAN 2 (Isi Surat) -->
+    <div id="page2" class="card page-standby">
+        <div class="love-border">❤️❤️❤️❤️❤️❤️❤️❤️❤️❤️</div>
+        <div class="stamp">💌</div>
+        <h1>I Love Youuu Most! 🥰</h1>
+        <p>Semangat! Aku selalu dukung kamu dari sini dan selalu ada buat kamu setiap waktu sayang. Kalo capek, jangan lupa istirahat karena kamu kurang tidur dan kalo kangen kamu bisa spam aku!  💗</p>
+        <button id="btnLove">Pencet layarnya untuk memunculkan cinta! 💗</button>
+    </div>
+
+    <script>
+        const envelopeWrapper = document.getElementById('envelopeWrapper');
+        const heartSeal = document.getElementById('heartSeal');
+        const btnNext = document.getElementById('btnNext');
+        const btnLove = document.getElementById('btnLove');
+        const page1 = document.getElementById('page1');
+        const page2 = document.getElementById('page2');
+
+        heartSeal.addEventListener('click', (e) => {
+            envelopeWrapper.classList.add('open');
+            setTimeout(() => {
+                envelopeWrapper.classList.add('fade-out');
+                page1.classList.remove('page-hidden-inside');
+                page1.classList.add('page-active');
+            }, 600);
+            e.stopPropagation();
+        });
+
+        btnNext.addEventListener('click', (e) => {
+            page1.classList.remove('page-active');
+            page1.classList.add('page-opened');
+            
+            page2.classList.remove('page-standby');
+            page2.classList.add('page-active');
+            e.stopPropagation();
+        });
+
+        function createLove(x, y) {
+            const love = document.createElement('div');
+            love.classList.add('love-emote');
+            
+            const emotes = ['❤️', '💙', '🫶', '🥰', '😘', '✨', '💌'];
+            love.innerText = emotes[Math.floor(Math.random() * emotes.length)];
+            
+            const offsetX = (Math.random() - 0.5) * 80;
+            const offsetY = (Math.random() - 0.5) * 80;
+            
+            love.style.left = (x + offsetX - 20) + 'px'; 
+            love.style.top = (y + offsetY - 20) + 'px';
+            
+            document.body.appendChild(love);
+            setTimeout(() => { love.remove(); }, 1500);
+        }
+
+        btnLove.addEventListener('click', (e) => {
+            btnLove.innerText = "Makin banyak kamu tap layarnya aku makin cinta! 🫶";
+            for(let i = 0; i < 20; i++) {
+                setTimeout(() => { createLove(e.clientX, e.clientY); }, i * 50);
+            }
+            e.stopPropagation();
+        });
+
+        document.body.addEventListener('click', (e) => {
+            if(page2.classList.contains('page-active') && e.target !== btnLove) {
+                for(let i = 0; i < 5; i++) {
+                    setTimeout(() => { createLove(e.clientX, e.clientY); }, i * 40);
+                }
+            }
+        });
+
+        document.body.addEventListener('touchstart', (e) => {
+            if(page2.classList.contains('page-active') && e.target !== btnLove) {
+                const touch = e.touches[0];
+                for(let i = 0; i < 5; i++) {
+                    setTimeout(() => { createLove(touch.clientX, touch.clientY); }, i * 40);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
